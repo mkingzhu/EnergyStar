@@ -44,6 +44,22 @@ namespace EnergyStar
             EnergyManager.ThrottleAllUserBackgroundProcesses();
         }
 
+        static void SetUpUI()
+        {
+            // Create context menu
+            var contextMenu = new ContextMenuStrip();
+
+            // Add exit item
+            var exixItem = contextMenu.Items.Add("Exit");
+            exixItem.Click += new EventHandler((sender, e) => { Environment.Exit(0); });
+
+            // Create system tray icon
+            NotifyIcon icon = new NotifyIcon();
+            icon.ContextMenuStrip = contextMenu;
+            icon.Icon = new Icon("./icon.ico");
+            icon.Visible = true;
+        }
+
         static void Main(string[] args)
         {
             // Well, this program only works for Windows Version starting with Cobalt...
@@ -58,6 +74,8 @@ namespace EnergyStar
                 Environment.Exit(120);
             }
 
+            SetUpUI();
+
             // Call SystemEventsPowerModeChanged() to init the power adapter status.
             SystemEventsPowerModeChanged();
 
@@ -67,9 +85,7 @@ namespace EnergyStar
             var houseKeepingThread = new Thread(new ThreadStart(HouseKeepingThreadProc));
             houseKeepingThread.Start();
 
-#pragma warning disable CA1416 // Validate platform compatibility
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler((object sender, PowerModeChangedEventArgs e) => SystemEventsPowerModeChanged());
-#pragma warning restore CA1416 // Validate platform compatibility
 
             while (true)
             {
