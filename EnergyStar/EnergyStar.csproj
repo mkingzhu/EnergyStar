@@ -3,8 +3,9 @@
   <PropertyGroup>
     <OutputType Condition="'$(Configuration)'=='ReleaseInvisible'">WinExe</OutputType>
     <OutputType Condition="'$(Configuration)'!='ReleaseInvisible'">Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <Configurations>Debug;Release;ReleaseInvisible</Configurations>
@@ -16,6 +17,12 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
