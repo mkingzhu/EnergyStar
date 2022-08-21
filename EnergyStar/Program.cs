@@ -44,20 +44,21 @@ namespace EnergyStar
             EnergyManager.ThrottleAllUserBackgroundProcesses();
         }
 
-        static void SetUpUI()
+        static void SetUpUI(BatteryManager batteryManager)
         {
             // Create context menu
             var contextMenu = new ContextMenuStrip();
 
             // Add exit item
-            var exixItem = contextMenu.Items.Add("Exit");
-            exixItem.Click += new EventHandler((sender, e) => { Environment.Exit(0); });
+            var exitItem = contextMenu.Items.Add("Exit");
+            exitItem.Click += new EventHandler((sender, e) => { Environment.Exit(0); });
 
             // Create system tray icon
             NotifyIcon icon = new NotifyIcon();
             icon.ContextMenuStrip = contextMenu;
             icon.Icon = new Icon("./icon.ico");
             icon.Visible = true;
+            icon.MouseMove += new MouseEventHandler((sender, e) => { icon.Text = batteryManager.Status; });
         }
 
         static void Main(string[] args)
@@ -74,7 +75,9 @@ namespace EnergyStar
                 Environment.Exit(120);
             }
 
-            SetUpUI();
+            BatteryManager batteryManager = new BatteryManager();
+
+            SetUpUI(batteryManager);
 
             // Call SystemEventsPowerModeChanged() to init the power adapter status.
             SystemEventsPowerModeChanged();
@@ -86,6 +89,7 @@ namespace EnergyStar
             houseKeepingThread.Start();
 
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler((object sender, PowerModeChangedEventArgs e) => SystemEventsPowerModeChanged());
+            SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler((object sender, PowerModeChangedEventArgs e) => batteryManager.PowerModeChangedEventHandler());
 
             while (true)
             {
