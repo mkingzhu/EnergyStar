@@ -4,6 +4,7 @@
     <OutputType Condition="'$(Configuration)'=='ReleaseInvisible'">WinExe</OutputType>
     <OutputType Condition="'$(Configuration)'!='ReleaseInvisible'">Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
