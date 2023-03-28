@@ -13,7 +13,10 @@ namespace EnergyStar
             "EnergyStar.exe".ToLowerInvariant(),
             // Edge has energy awareness
             "msedge.exe",
+            "msedgewebview2.exe".ToLowerInvariant(),
             "WebViewHost.exe".ToLowerInvariant(),
+            // Teams
+            "Teams.exe".ToLowerInvariant(),
             // UWP Frame has special handling, should not be throttled
             "ApplicationFrameHost.exe".ToLowerInvariant(),
             // Fire extinguisher should not catch fire
@@ -33,10 +36,8 @@ namespace EnergyStar
             // IME
             "ChsIME.exe".ToLowerInvariant(),
             "ctfmon.exe",
-#if DEBUG
             // Visual Studio
             "devenv.exe",
-#endif
             // System Service - they have their awareness
             "csrss.exe",
             "smss.exe",
