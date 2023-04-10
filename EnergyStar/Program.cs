@@ -27,20 +27,7 @@ namespace EnergyStar
 
         static void SystemEventsPowerModeChanged()
         {
-            Win32Api.SYSTEM_POWER_STATUS powerStatus = Win32Api.GetSystemPowerStatus();
-
-            switch (powerStatus.ACLineStatus)
-            {
-                case Win32Api.SYSTEM_POWER_STATUS.AC_LINE_STATUS_OFFLINE:
-                    EnergyManager.IsAcConnected = false;
-                    break;
-                case Win32Api.SYSTEM_POWER_STATUS.AC_LINE_STATUS_ONLINE:
-                    EnergyManager.IsAcConnected = true;
-                    break;
-                default:
-                    break;
-            }
-
+            EnergyManager.IsAcConnected = BatteryManager.IsAcConnected;
             EnergyManager.ThrottleAllUserBackgroundProcesses();
         }
 

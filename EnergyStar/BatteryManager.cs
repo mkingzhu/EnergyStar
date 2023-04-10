@@ -1,6 +1,5 @@
 ﻿namespace EnergyStar
 {
-    using EnergyStar.Interop;
     using System.Text;
 
     internal class BatteryManager
@@ -15,8 +14,7 @@
             {
                 StringBuilder sb = new StringBuilder(isAcConnected ? "AC Mode" : "Battery Mode");
 
-                Win32Api.SYSTEM_POWER_STATUS status = Win32Api.GetSystemPowerStatus();
-                int currentBatteryLevel = status.BatteryLifePercent;
+                int currentBatteryLevel = (int)BatteryLifePercent;
                 int batteryLevelChanged = Math.Abs(batteryLevelWhenPowerModeChanged - currentBatteryLevel);
 
                 // Append the status only when the current battery level is less than 96% and there is a change in number.
@@ -33,31 +31,51 @@
 
         internal BatteryManager()
         {
-            Win32Api.SYSTEM_POWER_STATUS status = Win32Api.GetSystemPowerStatus();
-
-            isAcConnected = status.ACLineStatus == Win32Api.SYSTEM_POWER_STATUS.AC_LINE_STATUS_ONLINE;
+            isAcConnected = IsAcConnected;
             timeWhenPowerModeChanged = DateTime.UtcNow;
-            batteryLevelWhenPowerModeChanged = status.BatteryLifePercent;
+            batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
         }
 
         internal void PowerModeChangedEventHandler()
         {
-            Win32Api.SYSTEM_POWER_STATUS status = Win32Api.GetSystemPowerStatus();
-
             // AC disconnected
-            if (isAcConnected && status.ACLineStatus == Win32Api.SYSTEM_POWER_STATUS.AC_LINE_STATUS_OFFLINE)
+            if (isAcConnected && !IsAcConnected)
             {
                 isAcConnected = false;
                 timeWhenPowerModeChanged = DateTime.UtcNow;
-                batteryLevelWhenPowerModeChanged = status.BatteryLifePercent;
+                batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
             }
 
             // AC connected
-            if (!isAcConnected && status.ACLineStatus == Win32Api.SYSTEM_POWER_STATUS.AC_LINE_STATUS_ONLINE)
+            if (!isAcConnected && IsAcConnected)
             {
                 isAcConnected = true;
                 timeWhenPowerModeChanged = DateTime.UtcNow;
-                batteryLevelWhenPowerModeChanged = status.BatteryLifePercent;
+                batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
+            }
+        }
+
+        internal static PowerLineStatus PowerLineStatus
+        {
+            get
+            {
+                return SystemInformation.PowerStatus.PowerLineStatus;
+            }
+        }
+
+        internal static bool IsAcConnected
+        {
+            get
+            {
+                return PowerLineStatus == PowerLineStatus.Online;
+            }
+        }
+
+        internal static float BatteryLifePercent
+        {
+            get
+            {
+                return SystemInformation.PowerStatus.BatteryLifePercent;
             }
         }
     }
