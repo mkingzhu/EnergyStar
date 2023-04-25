@@ -1,4 +1,4 @@
-namespace EnergyStar
+﻿namespace EnergyStar
 {
     using System.Text;
 
@@ -15,14 +15,19 @@ namespace EnergyStar
                 StringBuilder sb = new StringBuilder(isAcConnected ? "AC Mode" : "Battery Mode");
 
                 int currentBatteryLevel = BatteryLifePercent;
-                int batteryLevelChanged = Math.Abs(batteryLevelWhenPowerModeChanged - currentBatteryLevel);
+                int batteryLevelChanged = batteryLevelWhenPowerModeChanged - currentBatteryLevel;
 
-                // Append the status only when the current battery level is less than 96% and there is a change in number.
-                if (batteryLevelChanged > 0 && currentBatteryLevel < 96)
+                if (currentBatteryLevel != 100)
+                {
+                    sb.Append($": {currentBatteryLevel}%");
+                }
+
+                // Append the status only when the current battery level is not full and there is a change in number.
+                if (batteryLevelChanged != 0 && currentBatteryLevel != 100)
                 {
                     TimeSpan duration = DateTime.UtcNow - timeWhenPowerModeChanged;
-                    double pace = duration.TotalMinutes / batteryLevelChanged;
-                    sb.Append(string.Format("\nDuration: {0}, {1} pace: {2}.", duration.ToString(@"hh\:mm"), isAcConnected ? "charging" : "draining", string.Format("{0:0.00}", pace)));
+                    double pace = duration.TotalMinutes / Math.Abs(batteryLevelChanged);
+                    sb.Append(string.Format("\nDuration: {0}, {1} pace: {2}.", duration.ToString(@"hh\:mm"), batteryLevelChanged < 0 ? "charging" : "draining", string.Format("{0:0.00}", pace)));
                 }
 
                 return sb.ToString();
