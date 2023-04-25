@@ -14,7 +14,7 @@
             {
                 StringBuilder sb = new StringBuilder(isAcConnected ? "AC Mode" : "Battery Mode");
 
-                int currentBatteryLevel = (int)BatteryLifePercent;
+                int currentBatteryLevel = BatteryLifePercent;
                 int batteryLevelChanged = Math.Abs(batteryLevelWhenPowerModeChanged - currentBatteryLevel);
 
                 // Append the status only when the current battery level is less than 96% and there is a change in number.
@@ -33,7 +33,7 @@
         {
             isAcConnected = IsAcConnected;
             timeWhenPowerModeChanged = DateTime.UtcNow;
-            batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
+            batteryLevelWhenPowerModeChanged = BatteryLifePercent;
         }
 
         internal void PowerModeChangedEventHandler()
@@ -43,7 +43,7 @@
             {
                 isAcConnected = false;
                 timeWhenPowerModeChanged = DateTime.UtcNow;
-                batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
+                batteryLevelWhenPowerModeChanged = BatteryLifePercent;
             }
 
             // AC connected
@@ -51,7 +51,7 @@
             {
                 isAcConnected = true;
                 timeWhenPowerModeChanged = DateTime.UtcNow;
-                batteryLevelWhenPowerModeChanged = (int)BatteryLifePercent;
+                batteryLevelWhenPowerModeChanged = BatteryLifePercent;
             }
         }
 
@@ -71,11 +71,11 @@
             }
         }
 
-        internal static float BatteryLifePercent
+        internal static int BatteryLifePercent
         {
             get
             {
-                return SystemInformation.PowerStatus.BatteryLifePercent;
+                return (int)SystemInformation.PowerStatus.BatteryLifePercent * 100;
             }
         }
     }
